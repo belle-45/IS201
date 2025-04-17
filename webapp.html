@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Memory Match Game</title>
+  <style>
+    body {
+      background-color: #1a202c;
+      color: #f7fafc;
+      font-family: 'Arial', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: start;
+      padding: 2rem;
+    }
+
+    h1 {
+      margin-bottom: 0.5rem;
+    }
+
+    .score {
+      margin-bottom: 1.5rem;
+      font-size: 1.2rem;
+    }
+
+    .game-board {
+      display: grid;
+      grid-template-columns: repeat(4, 80px);
+      gap: 15px;
+    }
+
+    .card {
+      width: 80px;
+      height: 80px;
+      background-color: #2d3748;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      border-radius: 10px;
+      cursor: pointer;
+      user-select: none;
+      transition: background-color 0.3s;
+      color: transparent;
+    }
+
+    .card.flipped, .card.matched {
+      background-color: #4fd1c5;
+      color: white;
+    }
+
+    .message {
+      margin-top: 1.5rem;
+      font-size: 1.3rem;
+      font-weight: bold;
+    }
+
+    button {
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      background-color: #38b2ac;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      display: none;
+    }
+
+    .nav-button {
+  background-color: #4fd1c5;
+  color: #1a202c;
+  padding: 0.6rem 1.2rem;
+  text-decoration: none;
+  border-radius: 9999px;
+  font-weight: bold;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  display: inline-block;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.25s ease, transform 0.2s ease;
+}
+.nav-button:hover {
+  background-color: #38b2ac;
+  transform: translateY(-2px);
+}
+  </style>
+</head>
+<body>
+
+  <h1>Memory Match Game</h1>
+  <a href="scratch.html" class="nav-button">Go to Scratch Page</a>
+  <div class="score" id="score">Score: 0</div>
+  <div class="game-board" id="gameBoard"></div>
+  <div class="message" id="message"></div>
+  <button id="playAgainBtn" onclick="startGame()">Play Again</button>
+
+  <script>
+    const emojis = ['🍎', '🍌', '🍒', '🍇', '🍓', '🍉', '🍍', '🥝'];
+    let cards = [];
+    let firstCard = null;
+    let secondCard = null;
+    let lockBoard = false;
+    let score = 0;
+    let matchesFound = 0;
+
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function createCards() {
+      const doubledEmojis = [...emojis, ...emojis];
+      const shuffled = shuffle(doubledEmojis);
+      return shuffled.map((emoji, index) => ({
+        id: index,
+        emoji,
+        matched: false,
+        flipped: false
+      }));
+    }
+
+    function renderBoard() {
+      const board = document.getElementById("gameBoard");
+      board.innerHTML = "";
+      cards.forEach(card => {
+        const cardDiv = document.createElement("div");
+        cardDiv.classList.add("card");
+        if (card.flipped || card.matched) {
+          cardDiv.classList.add("flipped");
+          cardDiv.textContent = card.emoji;
+        } else {
+          cardDiv.textContent = card.emoji;
+        }
+
+        cardDiv.addEventListener("click", () => handleCardClick(card));
+        board.appendChild(cardDiv);
+      });
+    }
+
+    function handleCardClick(card) {
+      if (lockBoard || card.flipped || card.matched) return;
+
+      card.flipped = true;
+      renderBoard();
+
+      if (!firstCard) {
+        firstCard = card;
+      } else {
+        secondCard = card;
+        lockBoard = true;
+
+        if (firstCard.emoji === secondCard.emoji) {
+          // Match!
+          firstCard.matched = true;
+          secondCard.matched = true;
+          score++;
+          matchesFound++;
+          resetTurn();
+          updateScore();
+          checkWin();
+        } else {
+          // Not a match
+          setTimeout(() => {
+            firstCard.flipped = false;
+            secondCard.flipped = false;
+            resetTurn();
+            renderBoard();
+          }, 1000);
+        }
+      }
+    }
+
+    function resetTurn() {
+      [firstCard, secondCard] = [null, null];
+      lockBoard = false;
+    }
+
+    function updateScore() {
+      document.getElementById("score").textContent = "Score: " + score;
+    }
+
+    function checkWin() {
+      if (matchesFound === emojis.length) {
+        document.getElementById("message").textContent = "🎉 You won! Play again?";
+        document.getElementById("playAgainBtn").style.display = "inline-block";
+      }
+    }
+
+    function startGame() {
+      score = 0;
+      matchesFound = 0;
+      cards = createCards();
+      updateScore();
+      document.getElementById("message").textContent = "";
+      document.getElementById("playAgainBtn").style.display = "none";
+      renderBoard();
+    }
+
+    // Start the game when the page loads
+    window.onload = startGame;
+  </script>
+</body>
+</html>

@@ -1,0 +1,70 @@
+body {
+    background-color: #e8f1f2;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+  }
+  
+  /* Style 2: Header section */
+  .header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  .header h1 {
+    color: #2c3e50;
+    font-size: 2.5em;
+  }
+  
+  /* Style 3: Navigation */
+  .nav {
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  
+  .nav a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: #0077b6;
+    font-weight: bold;
+  }
+  
+  .nav a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Style 4: Content blocks */
+  .section {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    margin: 20px auto;
+    max-width: 800px;
+  }
+  
+  /* Style 5: List styling */
+  .centered-list {
+    list-style-position: inside;
+    padding-left: 0;
+  }
+  
+  /* Style 6: Video and top link */
+  iframe {
+    display: block;
+    margin: 0 auto;
+    border-radius: 12px;
+  }
+  
+  .go-top {
+    text-align: center;
+    margin-top: 50px;
+  }
+  
+  .go-top a {
+    font-weight: bold;
+    color: #444;
+    text-decoration: none;
+  }
